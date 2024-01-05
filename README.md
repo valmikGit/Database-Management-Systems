@@ -1,4 +1,4 @@
-﻿# Database-Management-Systems
+﻿# Database Management Systems
 ### Learning Database Management and Systems.
 
 ## Lab 1:
