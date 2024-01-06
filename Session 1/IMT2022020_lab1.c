@@ -51,7 +51,7 @@ int save_struct_text(char *filename)
   FILE *file_Pointer = fopen(filename, "w");
   for (int i = 0; i < 5; i++)
   {
-    fprintf(file_Pointer, "%s %d %d ", students[i].name, students[i].age, students[i].rollnum);
+    fprintf(file_Pointer, "%s %d %d\n", students[i].name, students[i].age, students[i].rollnum);
   }
   fclose(file_Pointer);
   free(students);
@@ -60,7 +60,7 @@ int save_struct_text(char *filename)
 int read_struct_text(char *filename)
 {
   FILE *file_Pointer = fopen(filename, "r");
-  char *read_Student_From_File = (char *)malloc(52 * sizeof(char));
+  // char *read_Student_From_File = (char *)malloc(52 * sizeof(char));
   int age, rollnum;
   char * name;
   for (int i = 0; i < 5; i++)
@@ -70,7 +70,7 @@ int read_struct_text(char *filename)
   }
   printf("\n");
   fclose(file_Pointer);
-  free(read_Student_From_File);
+  // free(read_Student_From_File);
   return 0;
 }
 
