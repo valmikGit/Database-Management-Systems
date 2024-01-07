@@ -48,7 +48,7 @@
 - Secondly, we store student details in the form: roll number, name and age in a .bin file. Then, we read from this file and print the content read on the terminal.
 - Thus, it is a very basic database which we are trying to create.
 ### How to run the programs:
-- Navigate to the Session 1 folder.
+- Navigate to the Session 2 folder.
     ```bash
     cd "Session 2"
     ```
