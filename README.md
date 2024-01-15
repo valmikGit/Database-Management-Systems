@@ -80,3 +80,6 @@
     ```bash
     make read_c
     ```
+
+## Non Indexed Sequential Datafile:
+### Description:
