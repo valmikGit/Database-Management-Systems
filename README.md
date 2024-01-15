@@ -102,7 +102,7 @@
   make
   ```
 - Now, to run the driver code, run the command:
-  '''bash
+  ```bash
   make run_contact
   ```
 - You will see the result of the test cases, i.e. "SUCCESS" or "FAIL". 
