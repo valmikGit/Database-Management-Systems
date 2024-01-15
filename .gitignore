@@ -12,3 +12,5 @@ driver_session2b
 driver_session2c
 driver_session2d
 *.bin
+*.dat
+contact_driver
