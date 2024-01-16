@@ -31,6 +31,7 @@ int pds_open(char *repo_name, int rec_size)
     // Initialize other members of PDS_RepoInfo
     char * filename = (char *)malloc(sizeof(repo_name));
     strcpy(filename, repo_name);
+    strcpy(repo_handle.pds_name, filename);
     strcat(filename, ".dat");
     repo_handle.pds_data_fp = fopen(filename, "ab+");
     if (repo_handle.pds_data_fp == NULL)
@@ -88,5 +89,10 @@ int pds_close()
     // Close the repo file
     // Update file pointer and status in global struct
     fclose(repo_handle.pds_data_fp);
+    char * temp = (char *)malloc(sizeof(repo_handle.pds_name));
+    strcpy(temp, repo_handle.pds_name);
+    strcat(temp, ".dat");
+    repo_handle.pds_data_fp = fopen(temp, "wb+");
     repo_handle.repo_status = PDS_REPO_CLOSED;
+    return PDS_SUCCESS;
 }

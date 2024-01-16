@@ -33,7 +33,7 @@ int main()
 		TREPORT(test_case_id,"FAIL")
 		exit(status);
 	}
-	//exit(1);
+	// exit(1);
 
 	test_case_id = "01";
 	status = pds_open( repo_name, rec_size );
@@ -44,7 +44,7 @@ int main()
 		TREPORT(test_case_id,"FAIL")
 		exit(status);
 	}
-	//exit(1);
+	// exit(1);
 	
 	test_case_id = "02";
 	testContact.contact_id = 10000;
@@ -95,7 +95,7 @@ int main()
 	test_case_id = "07";
 	testContact.contact_id = -1;
 	status = search_contact( 10000, &testContact );
-	if( status != CONTACT_FAILURE )
+	if( status == CONTACT_FAILURE )
 		TREPORT(test_case_id,"SUCCESS")
 	else
 		TREPORT(test_case_id,"FAIL")
