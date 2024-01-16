@@ -80,3 +80,29 @@
     ```bash
     make read_c
     ```
+
+## Non Indexed Sequential Datafile:
+### Description:
+- In this lab, we begin with a basic implementation of Personal Data Store (PDS). This does not contain any index.
+### How to run the program:
+- Navigate to the Lab 02 Non-indexed Sequential Datafile folder:
+  ```bash
+  cd ".\Lab 02 - Non-Indexed Sequential Datafile (pds_v1)-20240112\"
+  ```
+- Start WSL.
+  ```bash
+  wsl
+  ```
+- Run the command:
+  ```bash
+  make clean
+  ```
+- Then run the command:
+  ```bash
+  make
+  ```
+- Now, to run the driver code, run the command:
+  ```bash
+  make run_contact
+  ```
+- You will see the result of the test cases, i.e. "SUCCESS" or "FAIL". 
