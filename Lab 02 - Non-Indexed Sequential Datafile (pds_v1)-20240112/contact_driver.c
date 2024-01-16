@@ -94,7 +94,7 @@ int main()
 
 	test_case_id = "07";
 	testContact.contact_id = -1;
-	status = search_contact( 10000, &testContact );
+	status = search_contact( 10001, &testContact );
 	if( status == CONTACT_FAILURE )
 		TREPORT(test_case_id,"SUCCESS")
 	else
