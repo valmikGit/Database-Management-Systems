@@ -141,4 +141,4 @@
   ```bash
   make check_testcases
   ```
-- You will see the result of the test cases, i.e. "SUCCESS" or "FAIL".
+- You will see the result of the test cases, i.e. "PASS" or "FAIL".
