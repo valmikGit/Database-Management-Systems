@@ -106,12 +106,10 @@ int put_rec_by_key(int key, void *rec)
 			fwrite(rec, repo_handle.rec_size, 1, repo_handle.pds_data_fp);
 			return PDS_SUCCESS;
 		}
-		printf("Function put rec by key is returning PDS_ADD_FAILED = %d\n", PDS_ADD_FAILED);
 		return PDS_ADD_FAILED;
 	}
 	else
 	{
-		printf("Function put rec by key is returning PDS_REPO_NOT_OPEN = %d\n", PDS_REPO_NOT_OPEN);
 		return PDS_REPO_NOT_OPEN;
 	}
 }
@@ -153,11 +151,8 @@ int pds_close()
 	strcpy(temp, repo_handle.pds_name);
 	strcat(temp, ".ndx");
 	repo_handle.pds_ndx_fp = fopen(temp, "wb");
-	// repo_handle.pds_data_fp = fopen(temp, "wb");
-	printf("Opened the file with the name : %s in the wb mode.\n", temp);
 	if (repo_handle.pds_ndx_fp != NULL)
 	{
-		// fwrite(repo_handle.ndx_array, sizeof(struct PDS_NdxInfo), repo_handle.rec_count, repo_handle.pds_ndx_fp);
 		fwrite(&repo_handle.rec_count, sizeof(int), 1, repo_handle.pds_ndx_fp);
 		fwrite(repo_handle.ndx_array, sizeof(struct PDS_NdxInfo), repo_handle.rec_count, repo_handle.pds_ndx_fp);
 		fclose(repo_handle.pds_ndx_fp);
