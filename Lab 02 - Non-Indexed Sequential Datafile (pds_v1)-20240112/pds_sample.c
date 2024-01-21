@@ -63,12 +63,12 @@ int get_rec_by_key(int key, void *rec)
     // Read record-record-by record from data file
     // Compare key of the record with the given key
     // Return success status if record is found else return failure status
-    int temp;
     if (fseek(repo_handle.pds_data_fp, 0, SEEK_SET) != 0)
     {
         repo_handle.repo_status = PDS_REPO_ALREADY_OPEN;
         return PDS_FILE_ERROR;
     }
+    int temp;
     while (fread(&temp, sizeof(int), 1, repo_handle.pds_data_fp) > 0)
     {   
         if (temp == key)

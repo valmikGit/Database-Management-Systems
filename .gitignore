@@ -13,4 +13,5 @@ driver_session2c
 driver_session2d
 *.bin
 *.dat
+*.ndx
 contact_driver
