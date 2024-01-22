@@ -1,7 +1,7 @@
 ﻿# Database Management Systems
 ### Learning Database Management and Systems.
 
-## Lab 1:
+## Lab 1 A:
 ### Description:
 - This lab is about saving our data in a .txt file for storage purpose, like a very raw database. Then we perform file I/O to read from and write to the .txt files.
 - Firstly, we store 20 random integers in a text file and then read them and print them on the terminal.
@@ -41,7 +41,7 @@
     make read_c
     ```
     
-## Lab 2:
+## Lab 1 B:
 ### Description:
 - This lab is about saving our data in a .bin file for storage purpose, like a very raw database. Then we perform file I/O to read from and write to the .bin files.
 - Firstly, we store 20 random integers in a binary file and then read them and print them on the terminal.
@@ -81,7 +81,7 @@
     make read_c
     ```
 
-## Non Indexed Sequential Datafile:
+## Lab 2 - Non Indexed Sequential Datafile:
 ### Description:
 - We are beginning with storing fixed length records in the database.
 - In this lab, we begin with a basic implementation of Personal Data Store (PDS). This does not contain any index.
@@ -112,7 +112,7 @@
   ```
 - You will see the result of the test cases, i.e. "SUCCESS" or "FAIL".
 
-## Indexed Read Write Lab:
+## Lab 3 - Indexed Read Write Lab:
 ### Description:
 - In this lab, we modify our initial implementation of the database from a non indexed datafile to a indexed datafile. We maintain a .ndx file separately to make the search of an entry in the .dat file faster than before. The format of the .ndx file is: First entry in the .ndx file is an integer storing the count of records in the repository till the most recent update of the .ndx file.
 - In the previous version, to put a record into the database i.e. our .dat file, we used to directly write at the end of the .dat file. However, now in the latest version we will maintain an array of Index structures. Each Index structure will have a key and an offset. This tells the key of the record at that offset in the .dat file. Now, while making a new entry, we will write the record to the .dat file and add the corresponding key-offset pair to the array of Index structures. We will not write this key-offset pair to the .ndx file. We will just update the Index structure array.
