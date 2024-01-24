@@ -26,8 +26,12 @@ int pds_create(char *repo_name)
 		fclose(repo_handle.pds_data_fp);
 		fclose(repo_handle.pds_ndx_fp);
 		repo_handle.repo_status = PDS_REPO_CLOSED;
+		free(temp_dat);
+		free(temp_ndx);
 		return PDS_SUCCESS;
 	}
+	free(temp_dat);
+	free(temp_ndx);
 	return PDS_FILE_ERROR;
 }
 
@@ -55,19 +59,27 @@ int pds_open(char *repo_name, int rec_size)
 		{
 			fclose(repo_handle.pds_ndx_fp);
 			repo_handle.repo_status = PDS_REPO_OPEN;
+			free(temp_dat);
+			free(temp_ndx);
 			return PDS_SUCCESS;
 		}
 		else
 		{
 			repo_handle.repo_status = PDS_REPO_OPEN;
+			free(temp_dat);
+			free(temp_ndx);
 			return PDS_NDX_SAVE_FAILED;
 		}
 	}
 	if (repo_handle.repo_status == PDS_REPO_OPEN)
 	{
-		printf("Repo was already open.\n");
+		// printf("Repo was already open.\n");
+		free(temp_dat);
+		free(temp_ndx);
 		return PDS_REPO_ALREADY_OPEN;
 	}
+	free(temp_dat);
+	free(temp_ndx);
 	return PDS_FILE_ERROR;
 }
 
@@ -158,7 +170,9 @@ int pds_close()
 		fclose(repo_handle.pds_ndx_fp);
 		fclose(repo_handle.pds_data_fp);
 		repo_handle.repo_status = PDS_REPO_CLOSED;
+		free(temp);
 		return PDS_SUCCESS;
 	}
+	free(temp);
 	return PDS_FILE_ERROR;
 }
