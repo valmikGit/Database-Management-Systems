@@ -197,6 +197,7 @@ int pds_close()
 	{
 		fwrite(&repo_handle.rec_count, sizeof(int), 1, repo_handle.pds_ndx_fp);
 		bst_print_custom(repo_handle.ndx_root);
+
 		fclose(repo_handle.pds_data_fp);
 		fclose(repo_handle.pds_ndx_fp);
 		repo_handle.repo_status = PDS_REPO_CLOSED;
