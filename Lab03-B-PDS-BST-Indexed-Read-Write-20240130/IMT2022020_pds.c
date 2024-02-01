@@ -101,16 +101,18 @@ int pds_open(char *repo_name, int rec_size)
 int pds_load_ndx()
 {
 	int read_NDX = fread(&repo_handle.rec_count, sizeof(int), 1, repo_handle.pds_ndx_fp);
+	struct PDS_NdxInfo * temp_Ndx_Array = (struct PDS_NdxInfo *)malloc(read_NDX * sizeof(struct PDS_NdxInfo));
+	fread(temp_Ndx_Array, sizeof(struct PDS_NdxInfo), read_NDX, repo_handle.pds_ndx_fp);
 	if (read_NDX == 0)
 	{
+		free(temp_Ndx_Array);
 		return PDS_NDX_SAVE_FAILED;
 	}
-	struct PDS_NdxInfo temp_Ndx_Struct;
 	for (int i = 0; i < read_NDX; i++)
 	{
-		fread(&temp_Ndx_Struct, sizeof(struct PDS_NdxInfo), 1, repo_handle.pds_ndx_fp);
-		bst_add_node(&repo_handle.ndx_root, temp_Ndx_Struct.key, &temp_Ndx_Struct);
+		bst_add_node(&repo_handle.ndx_root, temp_Ndx_Array[i].key, &(temp_Ndx_Array[i]));
 	}
+	free(temp_Ndx_Array);
 	return PDS_SUCCESS;
 }
 
@@ -139,10 +141,12 @@ int put_rec_by_key(int key, void *rec)
 				int status = bst_add_node(&repo_handle.ndx_root, key, temp_Struct);
 				if (status == BST_SUCCESS)
 				{
+					// free(temp_Struct);
 					return PDS_SUCCESS;
 				}
 				else
 				{
+					// free(temp_Struct);
 					return PDS_ADD_FAILED;
 				}
 			}
@@ -197,7 +201,6 @@ int pds_close()
 	{
 		fwrite(&repo_handle.rec_count, sizeof(int), 1, repo_handle.pds_ndx_fp);
 		bst_print_custom(repo_handle.ndx_root);
-
 		fclose(repo_handle.pds_data_fp);
 		fclose(repo_handle.pds_ndx_fp);
 		repo_handle.repo_status = PDS_REPO_CLOSED;
