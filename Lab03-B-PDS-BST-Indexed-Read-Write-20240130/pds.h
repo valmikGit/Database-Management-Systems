@@ -1,6 +1,8 @@
 #ifndef PDS_H
 #define PDS_H
 
+#include "bst.h"
+
 // Error codes
 #define PDS_SUCCESS 0
 #define PDS_FILE_ERROR 1
@@ -28,7 +30,9 @@ struct PDS_RepoInfo{
 	int repo_status; 
 	int rec_size; // For fixed length records
 	int rec_count; // For the number of records in ndx_array
-	struct PDS_NdxInfo ndx_array[MAX_NDX_SIZE];
+	// struct PDS_NdxInfo ndx_array[MAX_NDX_SIZE]; // Array not to be used
+	// BST Index
+	struct BST_Node *ndx_root;
 };
 
 extern struct PDS_RepoInfo repo_handle;
@@ -43,10 +47,12 @@ int pds_create(char *repo_name);
 // Open the data file and index file in rb+ mode
 // Update the fields of PDS_RepoInfo appropriately
 // Read the number of records form the index file
-// Load the index into the array and store in ndx_array by reading index entries from the index file
+// Call pds_load_ndx
 // Close only the index file
 int pds_open( char *repo_name, int rec_size );
 
+// Load the index entries into the BST ndx_root by calling bst_add_node repeatedly for each 
+// index entry. Unlike array, for BST, you need read the index file one by one in a loop
 // pds_load_ndx
 // Internal function used by pds_open to read index entries into ndx_array
 int pds_load_ndx();
@@ -54,23 +60,23 @@ int pds_load_ndx();
 // put_rec_by_key
 // Seek to the end of the data file
 // Create an index entry with the current data file location using ftell
-// Add index entry to ndx_array using offset returned by ftell
+// Add index entry to BST by calling bst_add_node
 // Increment record count
 // Write the record at the end of the file
 // Return failure in case of duplicate key
 int put_rec_by_key( int key, void *rec );
 
 // get_rec_by_key
-// Search for index entry in ndx_array
+// Search for index entry in BST by calling bst_search
 // Seek to the file location based on offset in index entry
-// Read the key at the current location 
 // Read the record from the current location
 int get_rec_by_key( int key, void *rec );
 
 // pds_close
 // Open the index file in wb mode (write mode, not append mode)
 // Store the number of records
-// Unload the ndx_array into the index file by traversing it (overwrite the entire index file)
+// Unload the ndx_array into the index file by traversing the BST in pre-order mode (overwrite the entire index file)
+// Think why should it NOT be in-order?
 // Close the index file and data file
 int pds_close();
 
