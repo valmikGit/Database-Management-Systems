@@ -142,3 +142,8 @@
   make check_testcases
   ```
 - You will see the result of the test cases, i.e. "PASS" or "FAIL".
+## Lab 3B - BST Indexed Read Write Lab:
+### Description:
+- In this lab, we will try to reduce the search time of a record from O(n) to O(log n).
+- In the earlier lab, we were maintaining an index array of key-offset pairs. Thus, in the worst case the time complexity is O(n).
+- In this lab, in place of the array, we will maintain a binary search tree. Thus, in the worst case, the time complexity is O(log n).
