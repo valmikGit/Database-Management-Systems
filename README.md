@@ -123,7 +123,7 @@
 ### How to run the program:
 - Navigate to the "Lab03-PDS-Indexed-Read-Write-20240119" folder:
   ```bash
-  cd cd ".\Lab03-PDS-Indexed-Read-Write-20240119\"
+  cd ".\Lab03-PDS-Indexed-Read-Write-20240119\"
   ```
 - Start WSL:
   ```bash
@@ -147,3 +147,24 @@
 - In this lab, we will try to reduce the search time of a record from O(n) to O(log n).
 - In the earlier lab, we were maintaining an index array of key-offset pairs. Thus, in the worst case the time complexity is O(n).
 - In this lab, in place of the array, we will maintain a binary search tree. Thus, in the worst case, the time complexity is O(log n).
+### How to run the program:
+- Navigate to the "Lab03-PDS-Indexed-Read-Write-20240119" folder:
+  ```bash
+  cd ".\Lab03-B-PDS-BST-Indexed-Read-Write-20240130\"
+  ```
+- Start WSL:
+  ```bash
+  wsl
+  ```
+- Run the command:
+  ```bash
+  make clean
+  ```
+- Run the command:
+  ```bash
+  make
+  ```
+- Now, run the command:
+  ```bash
+  make check_testcases
+  ```
