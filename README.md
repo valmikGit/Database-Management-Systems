@@ -148,9 +148,39 @@
 - In the earlier lab, we were maintaining an index array of key-offset pairs. Thus, in the worst case the time complexity is O(n).
 - In this lab, in place of the array, we will maintain a binary search tree. Thus, in the worst case, the time complexity is O(log n).
 ### How to run the program:
-- Navigate to the "Lab03-PDS-Indexed-Read-Write-20240119" folder:
+- Navigate to the "Lab03-B-PDS-BST-Indexed-Read-Write-20240130" folder:
   ```bash
   cd ".\Lab03-B-PDS-BST-Indexed-Read-Write-20240130\"
+  ```
+- Start WSL:
+  ```bash
+  wsl
+  ```
+- Run the command:
+  ```bash
+  make clean
+  ```
+- Run the command:
+  ```bash
+  make
+  ```
+- Now, run the command:
+  ```bash
+  make check_testcases
+  ```
+## Lab 4 - Non Index Search Lab:
+### Description:
+- Till now, we searched a record based on its key attribute. However, we may want to search a record on the basis of some other attribute.
+- For example, if the records in our database are contacts, then we may want to search a contact on the basis of the phone number attribute.
+- Thus, we need to have a separate function which searches a record on the basis of some attribute other than the key.
+- For now, we will use brute force approach to search through the records, i.e. we will read a record from the .dat file and check whether the value of its required attribute matches the one queried for. If yes, we will return the record. If we do not find the record even after reaching the end of the .dat file, we will return that the record was not found.
+- Thus, now we can search for a record using the key attribute in O(log n) time and using some other attribute by brute force approach.
+- A generic matcher function is defined so that this function should be able to tell whether the record given to it has the required value of the specified attribute given to it. For example, a Contact record will be given to it and a phone number will be given to it. It should be able to return success or failure depending on whether the Contact record has a matching phone number.
+- Thus, after reading each record we use this matcher function to compare the values of the required attribute of the record and the value given to us for querying.
+### How to run the program:
+- Navigate to the "Lab-04-Non-Index-Search-20240205" folder:
+  ```bash
+  cd ".\Lab-04-Non-Index-Search-20240205\"
   ```
 - Start WSL:
   ```bash
