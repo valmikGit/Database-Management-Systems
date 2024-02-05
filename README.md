@@ -112,7 +112,7 @@
   ```
 - You will see the result of the test cases, i.e. "SUCCESS" or "FAIL".
 
-## Lab 3A - Indexed Read Write Lab:
+## Lab 3A - Indexed Read Write:
 ### Description:
 - In this lab, we modify our initial implementation of the database from a non indexed datafile to a indexed datafile. We maintain a .ndx file separately to make the search of an entry in the .dat file faster than before. The format of the .ndx file is: First entry in the .ndx file is an integer storing the count of records in the repository till the most recent update of the .ndx file.
 - In the previous version, to put a record into the database i.e. our .dat file, we used to directly write at the end of the .dat file. However, now in the latest version we will maintain an array of Index structures. Each Index structure will have a key and an offset. This tells the key of the record at that offset in the .dat file. Now, while making a new entry, we will write the record to the .dat file and add the corresponding key-offset pair to the array of Index structures. We will not write this key-offset pair to the .ndx file. We will just update the Index structure array.
@@ -142,7 +142,7 @@
   make check_testcases
   ```
 - You will see the result of the test cases, i.e. "PASS" or "FAIL".
-## Lab 3B - BST Indexed Read Write Lab:
+## Lab 3B - BST Indexed Read Write:
 ### Description:
 - In this lab, we will try to reduce the search time of a record from O(n) to O(log n).
 - In the earlier lab, we were maintaining an index array of key-offset pairs. Thus, in the worst case the time complexity is O(n).
@@ -168,7 +168,7 @@
   ```bash
   make check_testcases
   ```
-## Lab 4 - Non Index Search Lab:
+## Lab 4 - Non Index Search:
 ### Description:
 - Till now, we searched a record based on its key attribute. However, we may want to search a record on the basis of some other attribute.
 - For example, if the records in our database are contacts, then we may want to search a contact on the basis of the phone number attribute.
