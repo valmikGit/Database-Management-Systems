@@ -2,6 +2,7 @@
 #define PDS_H
 
 #include "bst.h"
+#include<stdio.h>
 
 // Error codes
 #define PDS_SUCCESS 0
