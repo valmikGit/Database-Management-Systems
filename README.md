@@ -198,3 +198,26 @@
   ```bash
   make check_testcases
   ```
+## Lab 5 - Index delete:
+### Description:
+### How to run the program:
+- Navigate to the "Lab-04-Non-Index-Search-20240205" folder:
+  ```bash
+  cd ".\Lab-04-Non-Index-Search-20240205\"
+  ```
+- Start WSL:
+  ```bash
+  wsl
+  ```
+- Run the command:
+  ```bash
+  make clean
+  ```
+- Run the command:
+  ```bash
+  make
+  ```
+- Now, run the command:
+  ```bash
+  make check_testcases
+  ```
