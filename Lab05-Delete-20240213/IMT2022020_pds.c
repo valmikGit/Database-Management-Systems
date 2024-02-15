@@ -264,6 +264,16 @@ int delete_rec_by_ndx_key(int key)
 		{
 			return PDS_DELETE_FAILED;
 		}
+		/*
+		NOTE - We will not decrement the repo_handle.rec_count by 1. Let us understand the reason behind by this through an example.
+		Assume the key-offset-is_deleted in the .ndx file looks like this:
+		10000 10 0
+		10001 20 0
+		10002 30 0
+		10003 40 0
+		10004 50 0
+		Currently, repo_handle.rec_count is 5. Now, let us say when we want to delete the record with key 10001. Now, if after toggling the is_deleted attribute the record with key 10001 to 1, we decrement the repo_handle.rec_count by 1. Let us say in the next query, we want to read the record with key 10004. Now our repo_handle.rec_count is 4. Now, we would never be able to reach the end of the file because our loop will run 4 times to search but our required record can only be accessed in the 5th iteration. Thus, we should not decrement the repo_handle.rec_count.
+		*/
 		temp_Struct->is_deleted = 1;
 		return PDS_SUCCESS;
 	}
