@@ -201,9 +201,9 @@
 ## Lab 5 - Index delete:
 ### Description:
 ### How to run the program:
-- Navigate to the "Lab-04-Non-Index-Search-20240205" folder:
+- Navigate to the "Lab05-Delete-20240213 folder:
   ```bash
-  cd ".\Lab-04-Non-Index-Search-20240205\"
+  cd ".\Lab05-Delete-20240213\
   ```
 - Start WSL:
   ```bash
