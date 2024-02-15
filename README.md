@@ -112,7 +112,7 @@
   ```
 - You will see the result of the test cases, i.e. "SUCCESS" or "FAIL".
 
-## Lab 3A - Indexed Read Write Lab:
+## Lab 3A - Indexed Read Write:
 ### Description:
 - In this lab, we modify our initial implementation of the database from a non indexed datafile to a indexed datafile. We maintain a .ndx file separately to make the search of an entry in the .dat file faster than before. The format of the .ndx file is: First entry in the .ndx file is an integer storing the count of records in the repository till the most recent update of the .ndx file.
 - In the previous version, to put a record into the database i.e. our .dat file, we used to directly write at the end of the .dat file. However, now in the latest version we will maintain an array of Index structures. Each Index structure will have a key and an offset. This tells the key of the record at that offset in the .dat file. Now, while making a new entry, we will write the record to the .dat file and add the corresponding key-offset pair to the array of Index structures. We will not write this key-offset pair to the .ndx file. We will just update the Index structure array.
@@ -142,15 +142,45 @@
   make check_testcases
   ```
 - You will see the result of the test cases, i.e. "PASS" or "FAIL".
-## Lab 3B - BST Indexed Read Write Lab:
+## Lab 3B - BST Indexed Read Write:
 ### Description:
 - In this lab, we will try to reduce the search time of a record from O(n) to O(log n).
 - In the earlier lab, we were maintaining an index array of key-offset pairs. Thus, in the worst case the time complexity is O(n).
 - In this lab, in place of the array, we will maintain a binary search tree. Thus, in the worst case, the time complexity is O(log n).
 ### How to run the program:
-- Navigate to the "Lab03-PDS-Indexed-Read-Write-20240119" folder:
+- Navigate to the "Lab03-B-PDS-BST-Indexed-Read-Write-20240130" folder:
   ```bash
   cd ".\Lab03-B-PDS-BST-Indexed-Read-Write-20240130\"
+  ```
+- Start WSL:
+  ```bash
+  wsl
+  ```
+- Run the command:
+  ```bash
+  make clean
+  ```
+- Run the command:
+  ```bash
+  make
+  ```
+- Now, run the command:
+  ```bash
+  make check_testcases
+  ```
+## Lab 4 - Non Index Search:
+### Description:
+- Till now, we searched a record based on its key attribute. However, we may want to search a record on the basis of some other attribute.
+- For example, if the records in our database are contacts, then we may want to search a contact on the basis of the phone number attribute.
+- Thus, we need to have a separate function which searches a record on the basis of some attribute other than the key.
+- For now, we will use brute force approach to search through the records, i.e. we will read a record from the .dat file and check whether the value of its required attribute matches the one queried for. If yes, we will return the record. If we do not find the record even after reaching the end of the .dat file, we will return that the record was not found.
+- Thus, now we can search for a record using the key attribute in O(log n) time and using some other attribute by brute force approach.
+- A generic matcher function is defined so that this function should be able to tell whether the record given to it has the required value of the specified attribute given to it. For example, a Contact record will be given to it and a phone number will be given to it. It should be able to return success or failure depending on whether the Contact record has a matching phone number.
+- Thus, after reading each record we use this matcher function to compare the values of the required attribute of the record and the value given to us for querying.
+### How to run the program:
+- Navigate to the "Lab-04-Non-Index-Search-20240205" folder:
+  ```bash
+  cd ".\Lab-04-Non-Index-Search-20240205\"
   ```
 - Start WSL:
   ```bash
