@@ -51,7 +51,15 @@ int add_contact( struct Contact *c )
 // Return CONTACT_SUCCESS if contact is found, CONTACT_FAILURE if not found
 int search_contact_by_phone( char *phone, struct Contact *c, int *io_count )
 {
-	// Call function
+	if (get_rec_by_non_ndx_key(phone, c, &match_contact_phone, io_count) == 1)
+	{
+		return PDS_SUCCESS;
+	}
+	else
+	{
+		return PDS_REC_NOT_FOUND;
+	}
+	
 }
 
 /* Return 0 if phone of the contact matches with phone parameter */
@@ -63,5 +71,30 @@ int match_contact_phone( void *rec, void *key )
     // Store the key in a char pointer
     // Compare the phone values in key and record
     // Return 0,1,>1 based on above condition
+	struct Contact * temp_Contact_Pointer = (struct Contact *)(rec);
+	char * temp_Char = (char *)(key);
+	if (strcmp(temp_Char, temp_Contact_Pointer->phone) == 0)
+	{
+		return 0;
+	}
+	else if (strcmp(temp_Char, temp_Contact_Pointer->phone) != 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 5;
+	}
+	
 }
 
+int delete_contact(int key) {
+	if (delete_rec_by_ndx_key(key) == PDS_DELETE_FAILED)
+	{
+		return CONTACT_FAILURE;
+	}
+	else
+	{
+		return CONTACT_SUCCESS;
+	}
+}
