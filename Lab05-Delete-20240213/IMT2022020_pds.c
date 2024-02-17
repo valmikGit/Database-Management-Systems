@@ -205,6 +205,15 @@ int get_rec_by_ndx_key(int key, void *rec)
 	return PDS_REPO_NOT_OPEN;
 }
 
+/*
+This function returns the corresponding ndx key for the given record at a particular io_count.
+Let us say we know that we find a particular record at io_count = k.
+Then, in the .dat file the location of this record will be = k * repo_handle.rec_size.
+Thus, using fseek() we can set the repo_handle.pds_data_fp at this point.
+Now we will read only the key/id (ndx key) of the record and return it.
+If fseek() does not return 0 then we return PDS_FILE_ERROR.
+*/
+
 int get_key_for_given_non_ndx_key(int *io_count)
 {
 	if (fseek(repo_handle.pds_data_fp, (*io_count) * repo_handle.rec_size, SEEK_SET) == 0)
@@ -230,19 +239,28 @@ int get_rec_by_non_ndx_key(void *non_ndx_key, void *rec, int (*matcher)(void *re
 				if (matcher(temp_Pointer, non_ndx_key) == 0)
 				{
 					(*io_count)--;
+					/*
+					We need to decrement the io_count by 1 before paasing it to the get_key_for_given_non_ndx_key() function. Because we have post increment operator on line 241 which will increment the io_count by 1 in the next occurence of the io_count.
+					*/
 					int key = get_key_for_given_non_ndx_key(io_count);
 					(*io_count)++;
+					/*
+					Here, we need to increment the io_count by 1 because we have decremented it initially by 1 for passing it to the get_key_for_given_non_ndx_key() function. However, for the testcases checker we need to update the value of the io_count to its original one.
+					*/
 					if (key == PDS_FILE_ERROR)
 					{
+						// Return file error.
 						return PDS_FILE_ERROR;
 					}
 					struct BST_Node *temp_BST_Struct = bst_search(repo_handle.pds_bst, key);
 					struct PDS_NdxInfo *temp_Struct = (struct PDS_NdxInfo *)(temp_BST_Struct->data);
 					if (temp_Struct->is_deleted)
 					{
+						// If is_deleted is 1 then the record is deleted and thus, not found.
 						return PDS_REC_NOT_FOUND;
 					}
 					fseek(repo_handle.pds_data_fp, temp_Struct->offset, SEEK_SET);
+					// Set the .dat file pointer at the offset of the record and read the record and return 1.
 					fread(rec, repo_handle.rec_size, 1, repo_handle.pds_data_fp);
 					return 1;
 				}
