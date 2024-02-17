@@ -198,3 +198,31 @@
   ```bash
   make check_testcases
   ```
+## Lab 5 - Index delete:
+### Description:
+- In this lab, we will add a delete operation based on the ndx key.
+- We can consider this option, once we delete a record, we can shift all the records below it up by 1 record. However, for large number of records, this will be very time consuming. The solution to this is discussed in the next point.
+- For this, we will additionally add a is_deleted flag in the PDS_NdxInfo struct. We will toggle this flag of each record to consider its status as deleted or not. Now, we won't need to shift all the records any time we delete a record. Thus, a lot of time is saved.
+- As we are not actually deleting a record and just toggling its is_deleted flag, we do not have to decrement the repo_handle.rec_count by 1 if we delete a record. 
+- Once we delete a record, we have to just set the is_deleted to 1. If we want to add a record which is already present in the .dat file but has its is_deleted flag equal to 1, we just need to toggle is_deleted flag and set the offset as the end of the file. Now, we will write to the .dat file.
+### How to run the program:
+- Navigate to the "Lab05-Delete-20240213 folder:
+  ```bash
+  cd ".\Lab05-Delete-20240213\
+  ```
+- Start WSL:
+  ```bash
+  wsl
+  ```
+- Run the command:
+  ```bash
+  make clean
+  ```
+- Run the command:
+  ```bash
+  make
+  ```
+- Now, run the command:
+  ```bash
+  make check_testcases
+  ```
