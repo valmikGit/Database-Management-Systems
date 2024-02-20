@@ -224,5 +224,5 @@
   ```
 - Now, run the command:
   ```bash
-  make check_testcases
+  make check_testcases_part_2
   ```
