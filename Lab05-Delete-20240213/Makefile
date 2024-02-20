@@ -7,3 +7,6 @@ clean:
 
 check_testcases:
 	./pds_tester testcase.in
+
+check_testcases_part_2:
+	./pds_tester testcase1.in
