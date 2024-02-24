@@ -11,8 +11,8 @@ void bst_print_custom(struct BST_Node *root)
 	{
 		// printf("%d ", root->key);
 		fwrite(root->data, sizeof(root->data), 1, repo_handle.pds_ndx_fp);
-		bst_print(root->left_child);
-		bst_print(root->right_child);
+		bst_print_custom(root->left_child);
+		bst_print_custom(root->right_child);
 	}
 }
 

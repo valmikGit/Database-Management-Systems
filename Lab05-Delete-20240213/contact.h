@@ -24,6 +24,7 @@ int search_contact( int contact_id, struct Contact *c );
 // Load all the contacts from a CSV file
 int store_contacts( char *contact_data_file );
 
+// Given the phone number to be searched, if found store the record in the contact pointer sent as an argument.
 int search_contact_by_phone( char *phone, struct Contact *c, int *io_count );
 
 /* Return 0 if phone of the contact matches with phone parameter */
