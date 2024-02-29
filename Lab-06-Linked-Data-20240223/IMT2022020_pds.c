@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pds.h"
+#include "student_course.h"
 
 void bst_print_custom(struct BST_Node *root)
 {
@@ -22,14 +23,37 @@ struct PDS_RepoInfo repo_handle;
 // Open the data file and index file in "wb" mode
 // Initialize index file by storing "0" to indicate there are zero entries in index file
 // close the files
-int pds_create(char *repo_name)
+int pds_create(char *repo_name, char *linked_repo_name)
 {
-	char *temp_dat = (char *)malloc(sizeof(repo_name));
-	char *temp_ndx = (char *)malloc(sizeof(repo_name));
+	char *temp_dat = (char *)malloc(strlen(repo_name));
+	char *temp_ndx = (char *)malloc(strlen(repo_name));
 	strcpy(temp_dat, repo_name);
 	strcpy(temp_ndx, repo_name);
 	strcat(temp_dat, ".dat");
 	strcat(temp_ndx, ".ndx");
+	char *temp_linked_dat = NULL;
+	char *temp_link = NULL;
+	int flag = 0;
+	if (linked_repo_name != NULL)
+	{
+		flag = 1;
+		temp_linked_dat = (char *)malloc(strlen(linked_repo_name));
+		temp_link = (char *)malloc(strlen(repo_name) + strlen(linked_repo_name) + 1);
+		strcpy(temp_linked_dat, linked_repo_name);
+		strcpy(temp_link, repo_name);
+		strcat(temp_link, "_");
+		strcat(temp_link, temp_linked_dat);
+		strcat(temp_linked_dat, ".dat");
+		strcat(temp_link, ".dat");
+		repo_handle.pds_linked_data_fp = fopen(temp_linked_dat, "wb");
+		repo_handle.pds_link_fp = fopen(temp_link, "wb");
+	}
+	else
+	{
+		printf("In pds create, linked_repo_name is NULL\n");
+		repo_handle.pds_data_fp = NULL;
+		repo_handle.pds_linked_data_fp = NULL;
+	}
 	repo_handle.pds_data_fp = fopen(temp_dat, "wb");
 	repo_handle.pds_ndx_fp = fopen(temp_ndx, "wb");
 	if (repo_handle.pds_data_fp && repo_handle.pds_ndx_fp)
@@ -38,35 +62,81 @@ int pds_create(char *repo_name)
 		fwrite(&zero, sizeof(int), 1, repo_handle.pds_ndx_fp);
 		fclose(repo_handle.pds_data_fp);
 		fclose(repo_handle.pds_ndx_fp);
+		if (flag)
+		{
+			fclose(repo_handle.pds_link_fp);
+			fclose(repo_handle.pds_linked_data_fp);
+		}
 		repo_handle.repo_status = PDS_REPO_CLOSED;
 		free(temp_dat);
 		free(temp_ndx);
+		if (flag)
+		{
+			free(temp_linked_dat);
+			free(temp_link);
+		}
 		return PDS_SUCCESS;
 	}
 	free(temp_dat);
 	free(temp_ndx);
+	if (flag)
+	{
+		free(temp_linked_dat);
+		free(temp_link);
+	}
 	return PDS_FILE_ERROR;
 }
 
-// pds_open
-// Open the data file and index file in rb+ mode
+// pds_open - CHANGED
+// Open the main data file and index file in rb+ mode
+// If linked_repo_name is NOT NULL
+//     Open the linked data file in rb+ mode (there is no index file for linked data)
+//     Open the link file in rb+ mode
+// end if
 // Update the fields of PDS_RepoInfo appropriately
-// Read the number of records form the index file
-// Load the index into the array and store in ndx_array by reading index entries from the index file
+// Build BST and store in pds_bst by reading index entries from the index file
 // Close only the index file
-int pds_open(char *repo_name, int rec_size)
+
+int pds_open(char *repo_name, char *linked_repo_name, int rec_size, int linked_rec_size)
 {
 	strcpy(repo_handle.pds_name, repo_name);
-	char *temp_dat = (char *)malloc(sizeof(repo_name));
+	char *temp_dat = (char *)malloc(strlen(repo_name));
 	strcpy(temp_dat, repo_name);
 	strcat(temp_dat, ".dat");
-	char *temp_ndx = (char *)malloc(sizeof(repo_name));
+	char *temp_ndx = (char *)malloc(strlen(repo_name));
 	strcpy(temp_ndx, repo_name);
 	strcat(temp_ndx, ".ndx");
+	char *temp_linked_dat = NULL;
+	char *temp_link = NULL;
+	int flag = 0;
+	if (linked_repo_name != NULL)
+	{
+		flag = 1;
+		temp_linked_dat = (char *)malloc(strlen(linked_repo_name));
+		temp_link = (char *)malloc(strlen(repo_name) + strlen(linked_repo_name) + 1);
+		strcpy(temp_linked_dat, linked_repo_name);
+		strcpy(temp_link, repo_name);
+		strcat(temp_link, "_");
+		strcat(temp_link, linked_repo_name);
+		strcat(temp_linked_dat, ".dat");
+		strcat(temp_link, ".dat");
+	}
 	if (repo_handle.repo_status == PDS_REPO_CLOSED)
 	{
 		repo_handle.pds_data_fp = fopen(temp_dat, "rb+");
 		repo_handle.pds_ndx_fp = fopen(temp_ndx, "rb+");
+		if (linked_repo_name != NULL)
+		{
+			repo_handle.pds_linked_data_fp = fopen(temp_linked_dat, "rb+");
+			repo_handle.pds_link_fp = fopen(temp_link, "rb+");
+			repo_handle.linked_rec_size = linked_rec_size;
+		}
+		else
+		{
+			repo_handle.pds_linked_data_fp = NULL;
+			repo_handle.pds_link_fp = NULL;
+			repo_handle.linked_rec_size = 0;
+		}
 		repo_handle.rec_size = rec_size;
 		if (pds_load_ndx() == PDS_SUCCESS)
 		{
@@ -74,6 +144,11 @@ int pds_open(char *repo_name, int rec_size)
 			repo_handle.repo_status = PDS_REPO_OPEN;
 			free(temp_dat);
 			free(temp_ndx);
+			if (flag)
+			{
+				free(temp_linked_dat);
+				free(temp_link);
+			}
 			return PDS_SUCCESS;
 		}
 		else
@@ -81,18 +156,33 @@ int pds_open(char *repo_name, int rec_size)
 			repo_handle.repo_status = PDS_REPO_OPEN;
 			free(temp_dat);
 			free(temp_ndx);
+			if (flag)
+			{
+				free(temp_linked_dat);
+				free(temp_link);
+			}
+
 			return PDS_NDX_SAVE_FAILED;
 		}
 	}
 	if (repo_handle.repo_status == PDS_REPO_OPEN)
 	{
-		// printf("Repo was already open.\n");
 		free(temp_dat);
 		free(temp_ndx);
+		if (flag)
+		{
+			free(temp_linked_dat);
+			free(temp_link);
+		}
 		return PDS_REPO_ALREADY_OPEN;
 	}
 	free(temp_dat);
 	free(temp_ndx);
+	if (flag)
+	{
+		free(temp_linked_dat);
+		free(temp_link);
+	}
 	return PDS_FILE_ERROR;
 }
 
@@ -102,13 +192,16 @@ int pds_open(char *repo_name, int rec_size)
 int pds_load_ndx()
 {
 	int read_NDX = fread(&repo_handle.rec_count, sizeof(int), 1, repo_handle.pds_ndx_fp);
-	struct PDS_NdxInfo *temp_Ndx_Array = (struct PDS_NdxInfo *)malloc(repo_handle.rec_count * sizeof(struct PDS_NdxInfo));
-	fread(temp_Ndx_Array, sizeof(struct PDS_NdxInfo), repo_handle.rec_count, repo_handle.pds_ndx_fp);
 	if (read_NDX == 0)
 	{
-		free(temp_Ndx_Array);
 		return PDS_NDX_SAVE_FAILED;
 	}
+	if (repo_handle.rec_count == 0)
+	{
+		return PDS_SUCCESS;
+	}
+	struct PDS_NdxInfo *temp_Ndx_Array = (struct PDS_NdxInfo *)malloc(repo_handle.rec_count * sizeof(struct PDS_NdxInfo));
+	fread(temp_Ndx_Array, sizeof(struct PDS_NdxInfo), repo_handle.rec_count, repo_handle.pds_ndx_fp);
 	for (int i = 0; i < repo_handle.rec_count; i++)
 	{
 		bst_add_node(&repo_handle.pds_bst, temp_Ndx_Array[i].key, &(temp_Ndx_Array[i]));
@@ -167,6 +260,30 @@ int put_rec_by_key(int key, void *rec)
 				return PDS_ADD_FAILED;
 			}
 			return PDS_ADD_FAILED;
+		}
+		return PDS_FILE_ERROR;
+	}
+	else
+	{
+		return PDS_REPO_NOT_OPEN;
+	}
+	return PDS_ADD_FAILED;
+}
+
+// put_linked_rec_by_key
+// Seek to the end of the linked data file
+// No need to create index entry
+// Write the key at the current data file location
+// Write the record after writing the key
+int put_linked_rec_by_key(int key, void *rec)
+{
+	if (repo_handle.repo_status == PDS_REPO_OPEN)
+	{
+		if (fseek(repo_handle.pds_linked_data_fp, 0, SEEK_END) == 0)
+		{
+			fwrite(&key, sizeof(int), 1, repo_handle.pds_linked_data_fp);
+			fwrite(rec, repo_handle.linked_rec_size, 1, repo_handle.pds_linked_data_fp);
+			return PDS_SUCCESS;
 		}
 		return PDS_FILE_ERROR;
 	}
@@ -272,9 +389,33 @@ int get_rec_by_non_ndx_key(void *non_ndx_key, void *rec, int (*matcher)(void *re
 	return PDS_REPO_NOT_OPEN;
 }
 
+// get_linked_rec_by_key - NEW
+// Do a linear search of the given key in the linked data file
+int get_linked_rec_by_key(int key, void *rec)
+{
+	int *temp_Key = (int *)malloc(sizeof(int));
+	if (fseek(repo_handle.pds_linked_data_fp, 0, SEEK_SET) == 0)
+	{
+		while (fread(temp_Key, sizeof(int), 1, repo_handle.pds_linked_data_fp) > 0)
+		{
+			if (*temp_Key == key)
+			{
+				fread(rec, repo_handle.linked_rec_size, 1, repo_handle.pds_linked_data_fp);
+				return PDS_SUCCESS;
+			}
+			fseek(repo_handle.pds_linked_data_fp, repo_handle.linked_rec_size, SEEK_CUR);
+		}
+		return PDS_REC_NOT_FOUND;
+	}
+	return PDS_FILE_ERROR;
+}
+
+// NOTE: When we delete a key, we need to actually delete the linked records too.
+// But we will ignore that part for now.
+// This function will now delete only from the main data
 int delete_rec_by_ndx_key(int key)
 {
-	struct BST_Node * temp_BST_Struct;
+	struct BST_Node *temp_BST_Struct;
 	if ((temp_BST_Struct = bst_search(repo_handle.pds_bst, key)) != NULL)
 	{
 		struct PDS_NdxInfo *temp_Struct = (struct PDS_NdxInfo *)(temp_BST_Struct->data);
@@ -298,12 +439,59 @@ int delete_rec_by_ndx_key(int key)
 	return PDS_DELETE_FAILED;
 }
 
-// pds_close
+// pds_link_rec - NEW
+// Create PDS_link_info instance based on key1 and key2
+// Go to the end of the link file
+// Store the PDS_link_info record
+int pds_link_rec(int key1, int key2)
+{
+	struct Student *temp_Student = (struct Student *)malloc(sizeof(struct Student));
+	int find_Student = get_rec_by_ndx_key(key1, temp_Student);
+	if (find_Student == PDS_SUCCESS)
+	{
+		struct PDS_link_info *new_Link_Record = (struct PDS_link_info *)malloc(sizeof(struct PDS_link_info));
+		new_Link_Record->parent_key = key1;
+		new_Link_Record->child_key = key2;
+		if (fseek(repo_handle.pds_link_fp, 0, SEEK_END) == 0)
+		{
+			fwrite(new_Link_Record, sizeof(new_Link_Record), 1, repo_handle.pds_link_fp);
+			return PDS_SUCCESS;
+		}
+		return PDS_FILE_ERROR;
+	}
+	return PDS_LINK_FAILED;
+}
+
+// pds_get_linked_rec - NEW
+// Go to the beginning of the link file
+// Reset result_set_size to 0
+// Do a linear search of all link_info records for matching the given parent_key
+// Store the matching linked key in linked_keys_result array
+// Keep updating the result_set_size
+int pds_get_linked_rec(int parent_key, int linked_keys_result[], int *result_set_size)
+{
+	*result_set_size = 0;
+	if (fseek(repo_handle.pds_link_fp, 0, SEEK_SET) == 0)
+	{
+		struct PDS_link_info *read_Link_Record = (struct PDS_link_info *)malloc(sizeof(struct PDS_link_info));
+		while (fread(read_Link_Record, sizeof(read_Link_Record), 1, repo_handle.pds_link_fp) > 0)
+		{
+			if (read_Link_Record->parent_key == parent_key)
+			{
+				linked_keys_result[*result_set_size] = read_Link_Record->child_key;
+				(*result_set_size)++;
+			}
+		}
+		return PDS_SUCCESS;
+	}
+	return PDS_FILE_ERROR;
+}
+
+// pds_close - CHANGE
 // Open the index file in wb mode (write mode, not append mode)
-// Store the number of records
-// Unload the ndx_array into the index file by traversing the BST in pre-order mode (overwrite the entire index file)
-// Think why should it NOT be in-order?
-// Close the index file and data file
+// Unload the BST into the index file by traversing it in PRE-ORDER (overwrite the entire index file)
+// Free the BST by call bst_destroy()
+// Close the index file, data file and linked data file
 int pds_close()
 {
 	char *temp = (char *)malloc(sizeof(repo_handle.pds_name));
@@ -316,10 +504,17 @@ int pds_close()
 		bst_print_custom(repo_handle.pds_bst);
 		fclose(repo_handle.pds_data_fp);
 		fclose(repo_handle.pds_ndx_fp);
+		if (repo_handle.pds_link_fp != NULL)
+		{
+			fclose(repo_handle.pds_link_fp);
+		}
+		if (repo_handle.pds_linked_data_fp != NULL)
+		{
+			fclose(repo_handle.pds_linked_data_fp);
+		}
 		repo_handle.repo_status = PDS_REPO_CLOSED;
 		free(temp);
 		return PDS_SUCCESS;
 	}
-
 	return PDS_FILE_ERROR;
 }
