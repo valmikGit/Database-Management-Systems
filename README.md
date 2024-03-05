@@ -226,3 +226,10 @@
   ```bash
   make check_testcases_part_2
   ```
+## Lab 6 - Linked Data, Non Interactive Tester and Interactive Tester:
+### Description -
+- In this lab, we will define a relationship between two entities, make an interactive tester and a non interactive tester.
+- I have implemented this database : Student(Parent entity), Course(Child entity) and Enrolls(Relationship).
+- Student has student.dat and student.ndx files. Functionalities available for the Student entity are: delete by ndx key, search by ndx key, search by non ndx key and insertion of a new record.
+- Course has only course.dat file. Functionalities available for the Course entity are: insertion of a new record and search by course ID attribute.
+- NOTE : Course entity can also have a .ndx file to make search by ndx key and non ndx key possible for it.
