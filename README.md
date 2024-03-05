@@ -226,7 +226,7 @@
   ```bash
   make check_testcases_part_2
   ```
-## Lab 6 - Linked Data, Non Interactive Tester and Interactive Tester:
+## Lab 6 - Linked Data(Relationship), Non Interactive Tester and Interactive Tester:
 ### Description -
 - In this lab, we will define a relationship between two entities, make an interactive tester and a non interactive tester.
 - I have implemented this database : Student(Parent entity), Course(Child entity) and Enrolls(Relationship).
