@@ -234,5 +234,5 @@
 - Course has only course.dat file. Functionalities available for the Course entity are: insertion of a new record and search by course ID attribute.
 - NOTE : Course entity can also have a .ndx file to make search by ndx key and non ndx key possible for it.
 - We also require to maintain a student_course.dat file to store the student ID and the corresponding course ID. For this we have to define a PDS_link_info structure in the pds.h file which has 2 attributes : parent_key and child_key. We write the instances of this structure into the student_course.dat file.
-- All the pds.c functions remain the same except the pds_open() and pds_close() functions.
-- I have also made a non interactive tester to automate the testing process. 
+- All the pds.c functions remain the same except the pds_open() and pds_close() functions. There can be 2 cases which we need to take care of : first is when we need to make a database which does not have relations among models (single model database) and second, when we want to establish a relation between 2 models present in our database.
+- I have also made a non interactive tester to automate the testing process. A non interactive tester helps us to automate testing. 
