@@ -18,3 +18,10 @@ contact_driver
 pds_tester
 Generic Programming
 *.docx
+*.zip
+.idea
+JDBC-tutorial/JDBC-tutorial
+*.iml
+JDBC-tutorial/_MACOSX
+*.pdf
+*.json
